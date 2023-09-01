@@ -30,7 +30,7 @@ const CreatureList = () => {
                       </label>
                     </th>
                     <th>Gatunek</th>
-                    <th>Ilość wpisów medycznych</th>
+                    <th>Liczba wpisów medycznych</th>
                     <th>Kolor wiodący</th>
                     <th></th>
                   </tr>
@@ -74,7 +74,7 @@ const CreatureList = () => {
                     <tr>
                       <th></th>
                       <th>Gatunek</th>
-                      <th>Ilość wpisów medycznych</th>
+                      <th>Liczba wpisów medycznych</th>
                       <th>Wiodący kolor</th>
                       <th></th>
                     </tr>
