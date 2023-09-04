@@ -26,6 +26,12 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+
+            <Link href="/creatures/add">
+              <div className="flex flex-col items-center justify-center gap-4 rounded-lg bg-secondary-focus p-8 shadow-lg">
+                <h2 className="text-2xl font-bold tracking-tight text-white">Dodaj zwierzę</h2>
+              </div>
+            </Link>
           </div>
         </div>
       </main>
