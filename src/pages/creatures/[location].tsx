@@ -1,6 +1,5 @@
 import { type GetStaticProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React from "react";
 import { generateSSHelper } from "~/server/helpers/sshelper";
 import { api } from "~/utils/api";
@@ -15,23 +14,27 @@ const SharedTableHeaders = () => (
 );
 
 const CreatureList = (props: { locationId: string }) => {
-  const router = useRouter();
-
-  const { data } = api.creatures.getByLocationId.useQuery({
+  const { data: creatures } = api.creatures.getByLocationId.useQuery({
     locationId: props.locationId,
   });
+
+  const { data: location } = api.locations.getById.useQuery({
+    id: props.locationId,
+  });
+
+  if (!creatures || !location) return <div>404</div>;
 
   return (
     <>
       <Head>
-        <title>Lista zwierząt ośrodka</title>
+        <title>Lista zwierząt ośrodka {location.name}</title>
       </Head>
       <main
         className={`flex min-h-screen flex-col items-center justify-start bg-base-200 p-24`}
       >
         <div className="flex flex-col gap-28">
           <h1 className="text-5xl text-secondary-focus">
-            Lista zwierząt dla Ośrodka : {router.query.location}
+            Lista zwierząt dla Ośrodka: {location.name}
           </h1>
           <div className="overflow-x-auto">
             <table className="table">
@@ -46,8 +49,8 @@ const CreatureList = (props: { locationId: string }) => {
                 </tr>
               </thead>
               <tbody>
-                {data
-                  ? data.map((row) => (
+                {creatures
+                  ? creatures.map((row) => (
                       <tr key={row.id}>
                         <th>
                           <label>
@@ -78,7 +81,7 @@ const CreatureList = (props: { locationId: string }) => {
                     ))
                   : null}
               </tbody>
-              {data?.length ? (
+              {creatures?.length ? (
                 <tfoot>
                   <tr>
                     <th></th>
@@ -103,6 +106,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   await helpers.creatures.getByLocationId.prefetch({
     locationId,
+  });
+
+  await helpers.locations.getById.prefetch({
+    id: locationId,
   });
 
   return {
