@@ -77,47 +77,59 @@ const AddCreature = () => {
         <title>Dodaj nowe zwierzę</title>
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <h1 className="mb-3 text-xl font-medium text-white">
+        <h1 className="mb-3 text-center text-2xl font-semibold text-white">
           Wprowadź dane zwierzęcia
         </h1>
         <form
           onSubmit={(event) => void handleSubmit(onSubmit)(event)}
-          className="flex w-[400px] flex-col gap-y-2"
+          className="flex w-2/3 flex-col gap-y-3 sm:w-1/2 lg:w-1/3 2xl:w-1/5"
         >
-          <fieldset>
+          <div>
             <label className="flex flex-col">
-              <span className="text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
+              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
                 Gatunek
               </span>
-              <input {...register("species")} type="text" className="input" />
+              <input
+                {...register("species")}
+                type="text"
+                placeholder="Wprowadź gatunek"
+                autoComplete="off"
+                className="input border-2 border-fuchsia-800 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+              />
             </label>
             {errors.species && (
               <span className="text-sm text-red-500">
                 {errors.species.message}
               </span>
             )}
-          </fieldset>
-          <fieldset>
+          </div>
+          <div>
             <label className="flex flex-col">
-              <span className="text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
+              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
                 Kolor
               </span>
-              <input {...register("colorName")} type="text" className="input" />
+              <input
+                {...register("colorName")}
+                type="text"
+                className="input border-2 border-fuchsia-800 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                placeholder="Wprowadź kolor"
+                autoComplete="off"
+              />
             </label>
             {errors.colorName && (
               <span className="text-sm text-red-500">
                 {errors.colorName.message}
               </span>
             )}
-          </fieldset>
-          <fieldset>
+          </div>
+          <div>
             <label className="flex flex-col">
-              <span className="text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
+              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
                 Lokalizacja ośrodka hodowlanego
               </span>
               <select
                 {...register("locationId")}
-                className="select"
+                className="select border-2 border-fuchsia-800 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
                 defaultValue=""
               >
                 <option value="" disabled>
@@ -135,19 +147,19 @@ const AddCreature = () => {
                 {errors.locationId.message}
               </span>
             )}
-          </fieldset>
-          <fieldset>
+          </div>
+          <div>
             <label className="flex flex-col">
-              <span className="text-sm font-medium text-white">Kolor</span>
+              <span className="mb-1 text-sm font-medium text-white">Kolor</span>
               <input
                 {...register("image")}
                 type="file"
                 accept="image/*"
-                className="file-input"
+                className="file-input border-2 border-fuchsia-800 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
                 multiple={false}
               />
             </label>
-            <span className="block text-xs text-white">
+            <span className="mt-1 block text-xs italic text-white">
               Dozwolone pliki obrazów o max. rozmiarze 1 MB
             </span>
             {errors.image && (
@@ -155,11 +167,11 @@ const AddCreature = () => {
                 {errors.image.message}
               </span>
             )}
-          </fieldset>
+          </div>
 
           <button
             type="submit"
-            className="btn btn-primary mt-3 w-[100px] self-center bg-fuchsia-600 hover:bg-fuchsia-800 disabled:bg-slate-400"
+            className="btn btn-primary mt-3 w-[100px] self-center border-none bg-fuchsia-800 hover:bg-fuchsia-600 disabled:bg-slate-400"
             disabled={isSubmitting}
           >
             Wyślij
