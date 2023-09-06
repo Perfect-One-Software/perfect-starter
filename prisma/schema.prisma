@@ -39,7 +39,7 @@ model Creature {
   image     String?
   colorName String
   Location      Location?       @relation(fields: [locationId], references: [id])
-  locationId    String?         @unique
+  locationId    String?
   MedicalRecord MedicalRecord[]
 }
 
