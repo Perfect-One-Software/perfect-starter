@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { api } from "~/utils/api";
 
 type Inputs = {
   image: string;
@@ -16,6 +17,9 @@ const AddCreature = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
+  const { data: locations = [], isLoading: isLoadingLocations } =
+    api.locations.getAll.useQuery();
+
   const onSubmit: SubmitHandler<Inputs> = (formData) => {
     console.log({ formData });
   };
@@ -26,6 +30,8 @@ const AddCreature = () => {
     colorName: watch("colorName"),
     locationId: watch("locationId"),
   });
+
+  if (isLoadingLocations) return <div>Loading...</div>;
 
   return (
     <>
@@ -55,10 +61,16 @@ const AddCreature = () => {
             <select
               {...register("locationId")}
               className="select"
-              defaultValue={1}
+              defaultValue=""
             >
-              <option value={1}>ośrodek 1</option>
-              <option value={2}>ośrodek 2</option>
+              <option value="" disabled>
+                Wybierz ośrodek hodowlany
+              </option>
+              {locations.map(({ id, name }) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
             </select>
           </label>
           <label className="flex flex-col">
