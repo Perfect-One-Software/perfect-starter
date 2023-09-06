@@ -5,6 +5,15 @@ import React from "react";
 import { generateSSHelper } from "~/server/helpers/sshelper";
 import { api } from "~/utils/api";
 
+const SharedTableHeaders = () => (
+  <>
+    <th>Gatunek</th>
+    <th>Liczba wpisów medycznych</th>
+    <th>Kolor wiodący</th>
+    <th></th>
+  </>
+);
+
 const CreatureList = (props: { locationId: string }) => {
   const router = useRouter();
 
@@ -26,7 +35,6 @@ const CreatureList = (props: { locationId: string }) => {
           </h1>
           <div className="overflow-x-auto">
             <table className="table">
-              {/* head */}
               <thead>
                 <tr>
                   <th>
@@ -34,10 +42,7 @@ const CreatureList = (props: { locationId: string }) => {
                       <input type="checkbox" className="checkbox" disabled />
                     </label>
                   </th>
-                  <th>Gatunek</th>
-                  <th>Liczba wpisów medycznych</th>
-                  <th>Kolor wiodący</th>
-                  <th></th>
+                  <SharedTableHeaders />
                 </tr>
               </thead>
               <tbody>
@@ -73,15 +78,11 @@ const CreatureList = (props: { locationId: string }) => {
                     ))
                   : null}
               </tbody>
-              {/* foot */}
               {data?.length ? (
                 <tfoot>
                   <tr>
                     <th></th>
-                    <th>Gatunek</th>
-                    <th>Liczba wpisów medycznych</th>
-                    <th>Wiodący kolor</th>
-                    <th></th>
+                    <SharedTableHeaders />
                   </tr>
                 </tfoot>
               ) : null}
