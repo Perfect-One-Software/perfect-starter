@@ -1,13 +1,8 @@
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { api } from "~/utils/api";
+import { type RouterInputs, api } from "~/utils/api";
 
-type Inputs = {
-  image: string;
-  species: string;
-  colorName: string;
-  locationId: string;
-};
+type SchemaType = RouterInputs["creatures"]["create"];
 
 const AddCreature = () => {
   const {
@@ -15,13 +10,19 @@ const AddCreature = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<SchemaType>();
+  console.log("🚀 ~ file: add.tsx:13 ~ AddCreature ~ errors:", errors);
 
   const { data: locations = [], isLoading: isLoadingLocations } =
     api.locations.getAll.useQuery();
 
-  const onSubmit: SubmitHandler<Inputs> = (formData) => {
-    console.log({ formData });
+  const { mutate } = api.creatures.create.useMutation();
+
+  const onSubmit: SubmitHandler<SchemaType> = (data) => {
+    console.log("formData: ", data);
+
+    // FIXME: handle image file to string (base64) conversion; 'image: null' value just for development purposes
+    mutate({ ...data, image: null });
   };
 
   console.log({
