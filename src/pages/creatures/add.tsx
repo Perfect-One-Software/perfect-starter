@@ -6,6 +6,9 @@ import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { CreatureSchema } from "~/server/generated";
 import { api } from "~/utils/api";
+import { convertImageToBase64 } from "~/utils/helpers";
+
+const ALLOWED_FILE_SIZE = 1024 * 1024;
 
 const CreateInputSchema = CreatureSchema.pick({
   image: true,
@@ -16,6 +19,17 @@ const CreateInputSchema = CreatureSchema.pick({
   locationId: z.string().refine((value) => value !== "", "Uzupełnij pole"),
   species: z.string().refine((value) => value !== "", "Uzupełnij pole"),
   colorName: z.string().refine((value) => value !== "", "Uzupełnij pole"),
+  image: z
+    .custom<FileList>()
+    .refine((files) => {
+      if (!files || files.length === 0) return true;
+      if (files?.[0] && typeof files[0].size === "number") {
+        const size = files[0].size;
+        return size < ALLOWED_FILE_SIZE;
+      }
+      return false;
+    }, "Rozmiar pliku powinien być mniejszy niż 1 MB")
+    .optional(),
 });
 
 type CreateInputSchemaType = z.infer<typeof CreateInputSchema>;
@@ -24,7 +38,6 @@ const AddCreature = () => {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CreateInputSchemaType>({
@@ -32,7 +45,6 @@ const AddCreature = () => {
   });
 
   const router = useRouter();
-  console.log("🚀 ~ file: add.tsx:13 ~ AddCreature ~ errors:", errors);
 
   const { data: locations = [], isLoading: isLoadingLocations } =
     api.locations.getAll.useQuery();
@@ -48,18 +60,14 @@ const AddCreature = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<CreateInputSchemaType> = (data) => {
-    console.log("formData: ", data);
-    // FIXME: handle image file to string (base64) conversion; 'image: null' value just for development purposes
-    mutate({ ...data, image: null });
-  };
+  const onSubmit: SubmitHandler<CreateInputSchemaType> = async (data) => {
+    let image;
+    if (data.image?.[0]) {
+      image = await convertImageToBase64(data.image[0]);
+    }
 
-  console.log({
-    image: watch("image"),
-    species: watch("species"),
-    colorName: watch("colorName"),
-    locationId: watch("locationId"),
-  });
+    mutate({ ...data, image });
+  };
 
   if (isLoadingLocations) return <div>Loading...</div>;
 
@@ -133,14 +141,15 @@ const AddCreature = () => {
               <span className="text-sm font-medium text-white">Kolor</span>
               <input
                 {...register("image")}
-                // FIXME: type changed to "text" to handle the image upload at the later stage
-                type="text"
-                // type="file"
-                // accept="image/*"
-                // className="file-input"
-                // multiple={false}
+                type="file"
+                accept="image/*"
+                className="file-input"
+                multiple={false}
               />
             </label>
+            <span className="block text-xs text-white">
+              Dozwolone pliki obrazów o max. rozmiarze 1 MB
+            </span>
             {errors.image && (
               <span className="text-sm text-red-500">
                 {errors.image.message}
