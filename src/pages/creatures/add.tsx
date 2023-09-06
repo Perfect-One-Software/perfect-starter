@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
@@ -29,15 +30,18 @@ const AddCreature = () => {
   } = useForm<CreateInputSchemaType>({
     resolver: zodResolver(CreateInputSchema),
   });
+
+  const router = useRouter();
   console.log("🚀 ~ file: add.tsx:13 ~ AddCreature ~ errors:", errors);
 
   const { data: locations = [], isLoading: isLoadingLocations } =
     api.locations.getAll.useQuery();
 
   const { mutate } = api.creatures.create.useMutation({
-    onSuccess: ({ species }) => {
+    onSuccess: async ({ species, locationId }) => {
       toast.success(`Pomyślnie dodano zwierzę ${species} do bazy`);
       reset();
+      await router.push(`/creatures/${locationId}`);
     },
     onError: () => {
       toast.error("Wystąpił błąd przy próbie dodania zwierzęcia do bazy");
@@ -45,9 +49,7 @@ const AddCreature = () => {
   });
 
   const onSubmit: SubmitHandler<CreateInputSchemaType> = (data) => {
-    // new Promise()
     console.log("formData: ", data);
-
     // FIXME: handle image file to string (base64) conversion; 'image: null' value just for development purposes
     mutate({ ...data, image: null });
   };
