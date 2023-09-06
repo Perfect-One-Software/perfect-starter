@@ -94,7 +94,7 @@ const AddCreature = () => {
                 type="text"
                 placeholder="Wprowadź gatunek"
                 autoComplete="off"
-                className="input border-2 border-fuchsia-800 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                className="input border-2 border-purple-950 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
               />
             </label>
             {errors.species && (
@@ -111,7 +111,7 @@ const AddCreature = () => {
               <input
                 {...register("colorName")}
                 type="text"
-                className="input border-2 border-fuchsia-800 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                className="input border-2 border-purple-950 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
                 placeholder="Wprowadź kolor"
                 autoComplete="off"
               />
@@ -129,7 +129,7 @@ const AddCreature = () => {
               </span>
               <select
                 {...register("locationId")}
-                className="select border-2 border-fuchsia-800 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                className="select border-2 border-purple-950 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
                 defaultValue=""
               >
                 <option value="" disabled>
@@ -155,7 +155,7 @@ const AddCreature = () => {
                 {...register("image")}
                 type="file"
                 accept="image/*"
-                className="file-input border-2 border-fuchsia-800 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                className="file-input border-2 border-purple-950 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
                 multiple={false}
               />
             </label>
