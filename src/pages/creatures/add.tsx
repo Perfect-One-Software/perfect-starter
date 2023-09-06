@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { CreatureSchema } from "~/server/generated";
 import { api } from "~/utils/api";
@@ -23,7 +24,8 @@ const AddCreature = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitting },
   } = useForm<CreateInputSchemaType>({
     resolver: zodResolver(CreateInputSchema),
   });
@@ -32,9 +34,18 @@ const AddCreature = () => {
   const { data: locations = [], isLoading: isLoadingLocations } =
     api.locations.getAll.useQuery();
 
-  const { mutate } = api.creatures.create.useMutation();
+  const { mutate } = api.creatures.create.useMutation({
+    onSuccess: ({ species }) => {
+      toast.success(`Pomyślnie dodano zwierzę ${species} do bazy`);
+      reset();
+    },
+    onError: () => {
+      toast.error("Wystąpił błąd przy próbie dodania zwierzęcia do bazy");
+    },
+  });
 
   const onSubmit: SubmitHandler<CreateInputSchemaType> = (data) => {
+    // new Promise()
     console.log("formData: ", data);
 
     // FIXME: handle image file to string (base64) conversion; 'image: null' value just for development purposes
@@ -137,7 +148,8 @@ const AddCreature = () => {
 
           <button
             type="submit"
-            className="btn btn-primary mt-3 w-[100px] self-center"
+            className="btn btn-primary mt-3 w-[100px] self-center bg-fuchsia-600 hover:bg-fuchsia-800 disabled:bg-slate-400"
+            disabled={isSubmitting}
           >
             Wyślij
           </button>
