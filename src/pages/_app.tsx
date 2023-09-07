@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { Toaster } from "react-hot-toast";
-import Layout from "~/components/layout";
+import { Layout } from "~/components";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

@@ -4,11 +4,19 @@ import { useRouter } from "next/router";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
+import {
+  FieldErrorMessage,
+  FieldLabel,
+  FileInput,
+  SelectInput,
+  SubmitButton,
+  TextInput,
+} from "~/components";
 import { CreatureSchema } from "~/server/generated";
 import { api } from "~/utils/api";
 import { convertImageToBase64 } from "~/utils/helpers";
 
-const ALLOWED_FILE_SIZE = 1024 * 1024;
+const MAX_FILE_SIZE = 1024 * 1024;
 
 const CreateInputSchema = CreatureSchema.pick({
   image: true,
@@ -25,7 +33,7 @@ const CreateInputSchema = CreatureSchema.pick({
       if (!files || files.length === 0) return true;
       if (files?.[0] && typeof files[0].size === "number") {
         const size = files[0].size;
-        return size < ALLOWED_FILE_SIZE;
+        return size < MAX_FILE_SIZE;
       }
       return false;
     }, "Rozmiar pliku powinien być mniejszy niż 1 MB")
@@ -86,52 +94,32 @@ const AddCreature = () => {
         >
           <div>
             <label className="flex flex-col">
-              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
-                Gatunek
-              </span>
-              <input
-                {...register("species")}
-                type="text"
+              <FieldLabel label="Gatunek" isRequired />
+              <TextInput
                 placeholder="Wprowadź gatunek"
-                autoComplete="off"
-                className="input border-2 border-purple-950 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+                {...register("species")}
               />
             </label>
-            {errors.species && (
-              <span className="text-sm text-red-500">
-                {errors.species.message}
-              </span>
+            {errors.species?.message && (
+              <FieldErrorMessage message={errors.species.message} />
             )}
           </div>
           <div>
             <label className="flex flex-col">
-              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
-                Kolor
-              </span>
-              <input
-                {...register("colorName")}
-                type="text"
-                className="input border-2 border-purple-950 bg-white font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
+              <FieldLabel label="Kolor" isRequired />
+              <TextInput
                 placeholder="Wprowadź kolor"
-                autoComplete="off"
+                {...register("colorName")}
               />
             </label>
-            {errors.colorName && (
-              <span className="text-sm text-red-500">
-                {errors.colorName.message}
-              </span>
+            {errors.colorName?.message && (
+              <FieldErrorMessage message={errors.colorName.message} />
             )}
           </div>
           <div>
             <label className="flex flex-col">
-              <span className="mb-1 text-sm font-medium text-white after:ml-0.5 after:text-red-500 after:content-['*']">
-                Lokalizacja ośrodka hodowlanego
-              </span>
-              <select
-                {...register("locationId")}
-                className="select border-2 border-purple-950 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
-                defaultValue=""
-              >
+              <FieldLabel label="Lokalizacja ośrodka hodowlanego" isRequired />
+              <SelectInput {...register("locationId")} defaultValue="">
                 <option value="" disabled>
                   Wybierz ośrodek hodowlany
                 </option>
@@ -140,42 +128,26 @@ const AddCreature = () => {
                     {name}
                   </option>
                 ))}
-              </select>
+              </SelectInput>
             </label>
-            {errors.locationId && (
-              <span className="text-sm text-red-500">
-                {errors.locationId.message}
-              </span>
+            {errors.locationId?.message && (
+              <FieldErrorMessage message={errors.locationId.message} />
             )}
           </div>
           <div>
             <label className="flex flex-col">
-              <span className="mb-1 text-sm font-medium text-white">Kolor</span>
-              <input
-                {...register("image")}
-                type="file"
-                accept="image/*"
-                className="file-input border-2 border-purple-950 bg-white text-base font-semibold text-black placeholder-slate-500 focus:border-fuchsia-600"
-                multiple={false}
+              <FieldLabel
+                label="Zdjęcie"
+                info="Dozwolone pliki obrazów o max. rozmiarze 1 MB"
               />
+              <FileInput {...register("image")} />
             </label>
-            <span className="mt-1 block text-xs italic text-white">
-              Dozwolone pliki obrazów o max. rozmiarze 1 MB
-            </span>
-            {errors.image && (
-              <span className="text-sm text-red-500">
-                {errors.image.message}
-              </span>
+            {errors.image?.message && (
+              <FieldErrorMessage message={errors.image.message} />
             )}
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary mt-3 w-[100px] self-center border-none bg-fuchsia-800 hover:bg-fuchsia-600 disabled:bg-slate-400"
-            disabled={isSubmitting}
-          >
-            Wyślij
-          </button>
+          <SubmitButton disabled={isSubmitting} />
         </form>
       </main>
     </>
