@@ -47,17 +47,17 @@ const AddCreature = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<CreateInputSchemaType>({
     resolver: zodResolver(CreateInputSchema),
   });
 
   const router = useRouter();
 
-  const { data: locations = [], isLoading: isLoadingLocations } =
+  const { data: locations, isLoading: isLoadingLocations } =
     api.locations.getAll.useQuery();
 
-  const { mutate } = api.creatures.create.useMutation({
+  const { mutate, isLoading: isSubmitting } = api.creatures.create.useMutation({
     onSuccess: async ({ species, locationId }) => {
       toast.success(`Pomyślnie dodano zwierzę ${species} do bazy`);
       reset();
@@ -123,7 +123,7 @@ const AddCreature = () => {
                 <option value="" disabled>
                   Wybierz ośrodek hodowlany
                 </option>
-                {locations.map(({ id, name }) => (
+                {locations?.map(({ id, name }) => (
                   <option key={id} value={id}>
                     {name}
                   </option>
@@ -146,7 +146,6 @@ const AddCreature = () => {
               <FieldErrorMessage message={errors.image.message} />
             )}
           </div>
-
           <SubmitButton disabled={isSubmitting} />
         </form>
       </main>
