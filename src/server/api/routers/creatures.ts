@@ -6,6 +6,19 @@ export const creaturesRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.creature.findMany();
   }),
+  getByLocationId: publicProcedure
+    .input(
+      z.object({
+        locationId: CreatureSchema.shape.locationId,
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.creature.findMany({
+        where: {
+          locationId: input.locationId,
+        },
+      });
+    }),
   edit: publicProcedure
     .input(
       z.object({
